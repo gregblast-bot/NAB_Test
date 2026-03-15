@@ -3,7 +3,7 @@ from sklearn.ensemble import IsolationForest
 import matplotlib.pyplot as plt
 
 # Load a specific NAB file, looking at CPU utilization
-data = pd.read_csv('ec2_cpu_utilization_5f5533.csv')
+data = pd.read_csv('data\\realAWSCloudwatch\\ec2_cpu_utilization_5f5533.csv')
 X = data[['value']]
 
 # Initialize the Model
