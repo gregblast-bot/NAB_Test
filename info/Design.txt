@@ -1,0 +1,30 @@
+Data Strategy (Archetype mapping), these represent different failure modes
+Label,NAB Source File (Example),What it represents
+CPU_ISSUE,aws_hot_spot.csv,Sudden spike in computation.
+NORMAL,artificialNoAnomaly/art_daily_small_noise.csv,Baseline steady-state behavior.
+NETWORK_ISSUE,ec2_network_in_257a.csv,High traffic throughput anomalies.
+
+Features to extract
+Feature,Interpretation for Engineer,"Likely ""Next Step"" Checklist"
+Volatility,"""The resource usage is oscillating wildly.""",Check for load balancer flapping or retry loops.
+Trend Slope,"""The resource is slowly leaking/filling up.""",Check for memory leaks or disk space logs.
+Burstiness,"""A massive spike occurred suddenly.""",Check for new deployment or batch job start.
+Instability,"""Current state is unlike the last hour.""",Immediate triage: check recent config changes.
+
+Trigae mapping (refined failure types)
+Failure Type,Primary Signal,Suggested Next Steps (Checklist)
+CPU Issue,High avg_load or burstiness,"1. Run top -o %CPU to find the rogue process.2. Check for recent code deployments or ""hot"" functions.3. Verify if autoscaling failed to trigger."
+Memory Issue,High trend_slope (Leak),"1. Check dmesg for ""Out of Memory"" (OOM) killer events.2. Inspect application logs for java.lang.OutOfMemoryError.3. Restart the service container/process."
+Disk Issue,High volatility in I/O,"1. Check df -h for 100% full partitions.2. Run iostat -x to check for high disk ""wait"" times.3. Delete or rotate old log files in /var/log."
+Network Issue,Sudden instability_index,"1. Check netstat for a spike in ""TIME_WAIT"" connections.2. Verify Cloud provider status (e.g., AWS Direct Connect).3. Look for a DDoS pattern or a sudden ""Retry Storm."""
+
+File Mapping Strategy
+Label,NAB Filename (Example),Why this file?
+NORMAL,artificialNoAnomaly/art_daily_small_noise.csv,"Clean, rhythmic baseline with no spikes."
+CPU_ISSUE,realAWSCloudwatch/ec2_cpu_utilization_5f5533.csv,"Contains sharp, massive spikes (classic ""Runaway Process"")."
+MEM_ISSUE,realKnownCause/nyc_taxi.csv,"Use the ""leading up to the event"" sections. It shows a sustained upward trend that mimics a memory leak."
+DISK_ISSUE,realAWSCloudwatch/rds_cpu_utilization_e47b3b.csv,"Shows dense, ""noisy"" high-utilization blocks, mimicking high I/O Wait or disk thrashing."
+
+Files to Test:
+Failure TypeNAB File PathWhy this is a good test?NORMALartificialNoAnomaly/art_daily_no_noise.csvPerfect "healthy" baseline. No spikes, just a flat/predictable pattern.CPU_ISSUErealAWSCloudwatch/ec2_cpu_utilization_5f5533.csvContains a massive, sudden spike to 100%—the classic "Runaway Process."NETWORK_ISSUErealAWSCloudwatch/ec2_network_in_257a.csvShows extreme, high-frequency "burstiness" typical of a traffic surge.DISK_ISSUErealAWSCloudwatch/rds_cpu_utilization_cc0c53.csvHigh-variance noise that mimics a database struggling with "I/O Wait" or disk thrashing.MEMORY_ISSUErealAWSCloudwatch/ec2_cpu_utilization_24ae8d.csvThis file shows a steady, linear "staircase" climb—the perfect proxy for a memory leak.
+

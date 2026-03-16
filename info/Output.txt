@@ -1,0 +1,58 @@
+precision    recall  f1-score   support
+
+         CPU       1.00      1.00      1.00      1056
+        DISK       1.00      1.00      1.00      1539
+         MEM       0.18      0.21      0.19       789
+     NETWORK       1.00      1.00      1.00      1762
+      NORMAL       0.93      0.92      0.93      9466
+
+    accuracy                           0.90     14612
+   macro avg       0.82      0.82      0.82     14612
+weighted avg       0.91      0.90      0.91     14612
+
+========================================
+INCIDENT REPORT: data/artificialNoAnomaly/art_daily_no_noise.csv
+DIAGNOSIS: NORMAL
+EVIDENCE: Instability is -18.4x higher than normal.
+--------------------
+SUGGESTED NEXT STEPS:
+  1. No action required. System healthy.
+========================================
+========================================
+INCIDENT REPORT: data/realAWSCloudwatch/ec2_cpu_utilization_5f5533.csv
+DIAGNOSIS: NORMAL
+EVIDENCE: Trend is 18.2x higher than normal.
+--------------------
+SUGGESTED NEXT STEPS:
+  1. No action required. System healthy.
+========================================
+========================================
+INCIDENT REPORT: data/realAWSCloudwatch/ec2_network_in_257a54.csv
+DIAGNOSIS: NETWORK
+EVIDENCE: Trend is -77350033.7x higher than normal.
+--------------------
+SUGGESTED NEXT STEPS:
+  1. Check 'netstat' for spikes
+  2. Verify LB 5xx error rates
+  3. Check for DDoS patterns
+========================================
+========================================
+INCIDENT REPORT: data/realAWSCloudwatch/rds_cpu_utilization_cc0c53.csv
+DIAGNOSIS: DISK
+EVIDENCE: Instability is 13.7x higher than normal.
+--------------------
+SUGGESTED NEXT STEPS:
+  1. Check 'df -h' for full partitions
+  2. Run 'iostat -x'
+  3. Rotate/Delete old logs
+========================================
+========================================
+INCIDENT REPORT: data/realAWSCloudwatch/ec2_cpu_utilization_24ae8d.csv
+DIAGNOSIS: MEM
+EVIDENCE: Instability is 10.1x higher than normal.
+--------------------
+SUGGESTED NEXT STEPS:
+  1. Check 'dmesg' for OOM killer
+  2. Inspect Java/Python heap logs
+  3. Restart service
+========================================
